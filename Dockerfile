@@ -1,7 +1,7 @@
 #
-# Scala and sbt Dockerfile
+# Scala, sbt, node, redoc, awscli, python Dockerfile
 #
-# https://github.com/hseeberger/scala-sbt
+# https://github.com/davidmargolin/scala-sbt
 #
 
 # Pull base image
@@ -29,6 +29,23 @@ RUN \
   apt-get update && \
   apt-get install sbt && \
   sbt sbtVersion
+
+# Install Node
+RUN \ 
+  curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+  apt-get update && \
+  apt-get install nodejs -y && \
+  apt-get install npm -y && \
+  apt-get install build-essential -y
+
+# Install Redoc
+RUN npm install -g redoc-cli
+
+# Install Python and AWS
+RUN \
+  wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py --user && \
+  ~/.local/bin/pip install --upgrade --user awscli && \
+  echo "export PATH=~/.local/bin:$PATH" >> /root/.bashrc
 
 # Define working directory
 WORKDIR /root
