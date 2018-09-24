@@ -1,11 +1,14 @@
 #
 # Scala, sbt, node, redoc, awscli, python Dockerfile
 #
-# https://github.com/davidmargolin/scala-sbt
+# https://github.com/davidmargolin/Scala-sbt-awscli-redoc-cli-node-Dockerfile
 #
 
 # Pull base image
 FROM openjdk:8u181
+
+# Define working directory
+WORKDIR /root
 
 # Env variables
 ENV SCALA_VERSION 2.12.6
@@ -18,8 +21,7 @@ RUN touch /usr/lib/jvm/java-8-openjdk-amd64/release
 ## Piping curl directly in tar
 RUN \
   curl -fsL https://downloads.typesafe.com/scala/$SCALA_VERSION/scala-$SCALA_VERSION.tgz | tar xfz - -C /root/ && \
-  echo >> /root/.bashrc && \
-  echo "export PATH=~/scala-$SCALA_VERSION/bin:$PATH" >> /root/.bashrc
+  export PATH=/root/scala-$SCALA_VERSION/bin:$PATH
 
 # Install sbt
 RUN \
@@ -44,8 +46,7 @@ RUN npm install -g redoc-cli
 # Install Python and AWS
 RUN \
   wget https://bootstrap.pypa.io/get-pip.py && python get-pip.py --user && \
-  ~/.local/bin/pip install --upgrade --user awscli && \
-  echo "export PATH=~/.local/bin:$PATH" >> /root/.bashrc
+  ~/.local/bin/pip install --upgrade awscli && \
+  export PATH=$PATH:/root/.local/bin/aws
 
-# Define working directory
-WORKDIR /root
+CMD ["/bin/bash"]
